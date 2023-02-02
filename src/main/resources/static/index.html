@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台用户列表</title>
+<style>
+        /* 滚动条宽度 */
+        .sc::-webkit-scrollbar {
+            width: 0;
+        }
+
+        .caption{
+            font-weight: bold;
+            font-size: 25px;
+            line-height: 50px;
+        }
+
+        table th {
+            height: 50px;
+            text-align: center;
+        }
+
+        table td {
+            height: 50px;
+            text-align: center;
+        }
+
+        .thead {
+            color: white;
+            background-color: #38F;
+        }
+
+         table tfoot {
+            background-color: #71ea71;
+        }
+
+        .tbody {
+            display: block;
+            width: calc(100%); /*这里的8px是滚动条的宽度*/
+            height: 400px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        table thead tr, table tbody tr, table tfoot tr {
+            box-sizing: border-box;
+            table-layout: fixed;
+            display: table;
+            width: 100%;
+        }
+
+        table tbody tr:nth-of-type(odd) {
+            background: #EEE;
+        }
+
+        table tbody tr:nth-of-type(even) {
+            background: #FFF;
+        }
+
+    </style>
+</head>
+
+<body>
+ <section style="margin: 100px auto;width: 70%;">
+        <table style="width: 100%">
+            <caption class="caption">用户列表</caption>
+            <thead class="thead">
+                <tr>
+                    <th>IP地址</th>
+                    <th>端口号</th>
+                    <th>用户名</th>
+                </tr>
+            </thead>
+            <tbody id="thelist" class="sc tbody">
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5">这是一个用户列表</td>
+                </tr>
+            </tfoot>
+        </table>
+    </section>
+<script type="text/javascript">
+    var list;
+
+    function alllist(length,i)
+    {
+        if(i>0)
+        {
+            return null;
+        }
+        var j
+        for (j=1;j<length;j++)
+        {
+            insRow("thelist", list[j])
+        }
+    }
+    function insRow(id,list) {
+        inf = list.split("//")
+        var x = document.getElementById(id).insertRow(-1);
+        var y = x.insertCell(0);
+        var z = x.insertCell(1);
+        var k = x.insertCell(2);
+        y.innerHTML = inf[0].replace("\"/","");
+        z.innerHTML = inf[1];
+        k.innerHTML = inf[2].replace("#\"","")
+        // setTimeout("insRow('thelist')",10000)
+    }
+    var i=0;
+    function getlist() {
+        if(i<999999) {
+            //1.创建ajax对象
+            const xhr = new XMLHttpRequest();
+            //2.监听ajax对象
+            xhr.onreadystatechange = function () {
+            /*
+            /当xhr对象的readystate属性发生了改变，这个事件就会触发
+            readyState：
+            0 ===>xhr对象已经创建，但是还没有进行初始化操作
+            1===>xhr对象已经调用了open
+            2===）xhr已经发出ajax请求
+            3 ===>已经返回了部分数据
+            4===>数据已经全部返回
+            */
+                if (xhr.readyState !== 4) {
+                    return;
+                }
+                //如果请求没有出错则会返回200-300的状态码
+                if (xhr.status === 200) {
+                    var get = xhr.responseText;
+                    get = get.replace("[","").replace("]","")
+                    list = get.split(",")
+                    if(list[i]!=="")
+                    {
+                        insRow("thelist", list[i])
+                        alllist(list.length,i)
+                        i++
+                    }
+                }
+            }
+            //3.打开对象，第三个参数表示是否使用异步
+            xhr.open("get", "http://47.113.189.105:30000/list", true);
+            //4.发送请求
+            xhr.send();
+            setTimeout("getlist()", 60000)
+        }
+    }
+    getlist();
+</script>
+</body>
+</html>
