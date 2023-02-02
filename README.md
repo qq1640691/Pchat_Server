@@ -1,2 +1,2 @@
 # Pchat_Server
-这是Pchar的Server端,使用Springboot,目的只是向老师展示后台用户,除此之外Springboot毫无用处,主要功能代码是UDPSERVER部分
+这是Pchar的Server端,使用Springboot,目的只是向老师展示后台用户,除此之外Springboot毫无用处,主要功能代码是SERVER层部分
