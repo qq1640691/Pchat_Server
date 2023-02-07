@@ -18,7 +18,7 @@ public class online
 
 	public void poll()
 	{
-		ScheduledExecutorService Service = Executors.newScheduledThreadPool(10);
+		ScheduledExecutorService Service = Executors.newScheduledThreadPool(1);
 			Service.scheduleWithFixedDelay(()->{
 			Set<String> keyset = userlist.keySet();
 			for(String user:keyset)
