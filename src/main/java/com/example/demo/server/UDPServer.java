@@ -37,10 +37,10 @@ public class UDPServer extends Thread{
 		DatagramSocket server = new DatagramSocket(41000,localIp);
 		byte[] buf = new byte[1024];
 		DatagramPacket packet = new DatagramPacket(buf, buf.length);
-		Thread online = new online(userlist,usermap);
-		online.start();
-		Thread newuser = new newuser(userlist,usermap,server,packet,getbytes);
-		newuser.start();
+		online online = new online(userlist,usermap);
+		online.poll();
+		newuser newuser = new newuser(userlist,usermap,server,packet,getbytes);
+		newuser.poll();
 		Thread receivepacket = new receivepacket(server, getbytes);
 		receivepacket.start();
 	}

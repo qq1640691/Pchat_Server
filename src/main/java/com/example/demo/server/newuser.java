@@ -6,12 +6,15 @@ import java.net.DatagramSocket;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static com.example.demo.UDPserverApplication.RSAprivatKEY;
 import static com.example.demo.server.UDPServer.errr;
 import static com.example.demo.server.UDPServer.linkuser;
 
-public class newuser extends Thread//这个查找函数可以改进,先这样写,可以用
+public class newuser//这个查找函数可以改进,先这样写,可以用
 {
 	ConcurrentHashMap<String,String> userlist;
 	ConcurrentHashMap<String,Long> usermap;
@@ -28,9 +31,10 @@ public class newuser extends Thread//这个查找函数可以改进,先这样写
         this.getbytes = getbytes;
     }
 
-    @Override
-	public synchronized void run() {
-		while(true) {
+
+	public synchronized void poll() {
+		ScheduledExecutorService Service = Executors.newScheduledThreadPool(1);
+			Service.scheduleWithFixedDelay(()->{
 			if (getbytes.size() > 0) {
 				Set<String> Keyset = getbytes.keySet();
 				for (String ipinf : Keyset) {
@@ -79,6 +83,6 @@ public class newuser extends Thread//这个查找函数可以改进,先这样写
 					}
 				}
 			}
-		}
+			},0,100, TimeUnit.MILLISECONDS);
 	}
 }

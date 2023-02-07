@@ -2,8 +2,11 @@ package com.example.demo.server;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-public class online extends Thread
+public class online
 {
 	ConcurrentHashMap<String,String> userlist;
 	ConcurrentHashMap<String,Long> usermap;
@@ -13,10 +16,10 @@ public class online extends Thread
 		this.usermap = usermap;
 	}
 
-	@Override
-	public synchronized void run() {
-		while(true)
-		{
+	public void poll()
+	{
+		ScheduledExecutorService Service = Executors.newScheduledThreadPool(10);
+			Service.scheduleWithFixedDelay(()->{
 			Set<String> keyset = userlist.keySet();
 			for(String user:keyset)
 			{
@@ -26,11 +29,6 @@ public class online extends Thread
 						userlist.remove(user);
 					}
 			}
-			try {
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
-		}
+		},0,20, TimeUnit.SECONDS);
 	}
 }
